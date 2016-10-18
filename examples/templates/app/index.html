@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Server Sent Events Example</title>
+
+    <script type="text/javascript">
+    <!--
+    window.onload = function setDataSource() {
+      if (!!window.EventSource) {
+        var source = new EventSource(
+            "http://0.0.0.0:5000/sse?channel=project-1");
+
+        source.onmessage = function(msg) {
+          console.log(msg);
+        };
+        source.addEventListener('edit', function(msg){
+          var li = document.createElement('li');
+          var type = msg.type;
+          var data = msg.data;
+          li.appendChild(
+              document.createTextNode("type: "+type+" data: "+data));
+          document.getElementById('messages').appendChild(li);
+        });
+
+      } else {
+        document.getElementById("notSupported").style.display = "block";
+      }
+    }
+    -->
+    </script>
+
+  </head>
+
+  <body>
+
+    <h1>Server Sent Events Example</h1>
+
+    <div id="messages"></div>
+
+    <div id="notSupported" style="display:none">
+      The browser doesn't support SSE
+    </div>
+
+  </body>
+</html>
+
