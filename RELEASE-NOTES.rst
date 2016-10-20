@@ -1,8 +1,8 @@
-====================
- Invenio-SSE v0.1.0
-====================
+======================
+ Invenio-SSE v1.0.0a1
+======================
 
-Invenio-SSE v0.1.0 was released on TBD, 2016.
+Invenio-SSE v1.0.0a1 was released on October 20, 2016.
 
 About
 -----
@@ -19,7 +19,7 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-sse==0.1.0
+   $ pip install invenio-sse==1.0.0a1
 
 Documentation
 -------------
