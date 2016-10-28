@@ -29,3 +29,4 @@ Invenio module for HTML5 server-sent events support.
 
 - Esteban J. G. Gabancho <esteban.gabancho@gmail.com>
 - Leonardo Rossi <leonardo.r@cern.ch>
+- Orestis Melkonian <melkon.or@gmail.com>

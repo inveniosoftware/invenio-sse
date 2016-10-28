@@ -28,6 +28,7 @@ from __future__ import absolute_import, print_function
 
 import json
 
+import pkg_resources
 from redis import StrictRedis
 from werkzeug.utils import cached_property
 
@@ -38,10 +39,23 @@ from .utils import format_sse_event
 class _SSEState(object):
     """SSE state accessible via ``proxies.current_sse``."""
 
-    def __init__(self, app):
+    def __init__(self, app, entry_point_group=None):
         """Initialize state."""
         self.app = app
         self._redis = StrictRedis.from_url(app.config['SSE_REDIS_URL'])
+        self.integrations = {}
+
+        if entry_point_group:
+            self.load_integration(entry_point_group)
+
+    def register_integration(self, integration_id, integration):
+        """Register an SSE integration with another module."""
+        self.integrations[integration_id] = integration(self.app)
+
+    def load_integration(self, entry_point_group):
+        """Load integration from an entry point group."""
+        for ep in pkg_resources.iter_entry_points(entry_point_group):
+            self.register_integration(ep.name, ep.load())
 
     @cached_property
     def _pubsub(self):
@@ -75,15 +89,15 @@ class _SSEState(object):
 class InvenioSSE(object):
     """Invenio-SSE extension."""
 
-    def __init__(self, app=None):
+    def __init__(self, app=None, **kwargs):
         """Extension initialization."""
         if app:
-            self.init_app(app)
+            self.init_app(app, **kwargs)
 
-    def init_app(self, app):
+    def init_app(self, app, entry_point_group='invenio_sse.integrations'):
         """Flask application initialization."""
         self.init_config(app)
-        app.extensions['invenio-sse'] = _SSEState(app)
+        app.extensions['invenio-sse'] = _SSEState(app, entry_point_group)
 
     def init_config(self, app):
         """Initialize configuration."""
