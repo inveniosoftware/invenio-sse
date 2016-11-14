@@ -64,15 +64,22 @@ def test_deposit_sse(app_deposit, db, deposit, users, deposit_integration):
             message = 'Hello World!'
 
             class Connect(threading.Thread):
+
+                def __init__(self):
+                    super(Connect, self).__init__()
+                    self._return = None
+
+                def join(self, timeout=None):
+                    super(Connect, self).join(timeout)
+                    return self._return
+
                 def run(self):
                     with app_deposit.app_context():
                         # Connect to SSE channel
                         resp = client.get(channel)
-                        assert resp.status_code == 200
-                        assert 'text/event-stream' in \
-                               resp.headers['Content-Type']
-                        # Check that published message arrived
-                        assert message in resp.response.next()
+                        self._return = (resp.status_code,
+                                        resp.headers['Content-Type'],
+                                        next(resp.response).decode('utf-8'))
 
             # Establish connection
             connect_thread = Connect()
@@ -82,4 +89,7 @@ def test_deposit_sse(app_deposit, db, deposit, users, deposit_integration):
             # Publish message
             current_sse.publish(data=message, channel=channel, type_='message')
 
-            connect_thread.join()
+            (status_code, content_type, msg) = connect_thread.join()
+            assert status_code == 200
+            assert 'text/event-stream' in content_type
+            assert message in msg
