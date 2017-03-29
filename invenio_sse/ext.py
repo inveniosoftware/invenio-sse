@@ -30,7 +30,6 @@ import json
 
 import pkg_resources
 from redis import StrictRedis
-from werkzeug.utils import cached_property
 
 from . import config
 from .utils import format_sse_event
@@ -57,11 +56,6 @@ class _SSEState(object):
         for ep in pkg_resources.iter_entry_points(entry_point_group):
             self.register_integration(ep.name, ep.load())
 
-    @cached_property
-    def _pubsub(self):
-        """A redis pubsub instance."""
-        return self._redis.pubsub()
-
     def publish(self, data, type_=None, id_=None, retry=None, channel='sse'):
         """Publish data as a server-sent event.
 
@@ -79,8 +73,9 @@ class _SSEState(object):
 
     def messages(self, channel='sse'):
         """Message generator from the given channel."""
-        self._pubsub.subscribe(channel)
-        for message in self._pubsub.listen():
+        pubsub = self._redis.pubsub()
+        pubsub.subscribe(channel)
+        for message in pubsub.listen():
             if message['type'] == 'message':
                 yield format_sse_event(
                     json.loads(message['data'].decode('utf-8')))
