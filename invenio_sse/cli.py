@@ -64,3 +64,14 @@ def publish(data, type_=None, id_=None, retry=None, channel='sse'):
         id_=id_,
         retry=retry,
         channel=channel)
+
+
+@sse.command('subscribe')
+@click.option('--channel',
+              help='Channel to direct events to different clients, by default '
+              'sse')
+@with_appcontext
+def subscribe(channel='sse'):
+    """Subscribe a channel."""
+    for message in current_sse.messages(channel=channel):
+        print(message)

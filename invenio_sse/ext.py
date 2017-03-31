@@ -71,9 +71,13 @@ class _SSEState(object):
         msg = {"data": data, "event": type_, "id": id_, "retry": retry}
         self._redis.publish(channel, json.dumps(msg))
 
+    def _pubsub(self):
+        """A redis pubsub instance."""
+        return self._redis.pubsub()
+
     def messages(self, channel='sse'):
         """Message generator from the given channel."""
-        pubsub = self._redis.pubsub()
+        pubsub = self._pubsub()
         pubsub.subscribe(channel)
         for message in pubsub.listen():
             if message['type'] == 'message':

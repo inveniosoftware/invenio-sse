@@ -34,8 +34,8 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-accounts>=1.0.0b1',
-    'invenio-access>=1.0.0a10',
+    'invenio-accounts>=1.0.0b3',
+    'invenio-access>=1.0.0a11',
     'invenio-rest[cors]>=1.0.0a10',
     'isort>=4.2.2',
     'mock>=1.3.0',
@@ -49,10 +49,10 @@ tests_require = [
 
 extras_require = {
     'deposit': [
-        'invenio-deposit>=1.0.0a6',
+        'invenio-deposit>=1.0.0a8',
     ],
     'docs': [
-        'Sphinx>=1.4.2',
+        'Sphinx>=1.5.1',
     ],
     'tests': tests_require,
 }

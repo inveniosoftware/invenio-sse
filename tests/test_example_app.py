@@ -31,6 +31,7 @@ import subprocess
 import time
 
 import pytest
+
 from invenio_sse import current_sse
 
 

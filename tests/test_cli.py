@@ -28,6 +28,7 @@
 import json
 from time import sleep
 
+import mock
 from click.testing import CliRunner
 
 from invenio_sse import cli, current_sse
@@ -35,15 +36,17 @@ from invenio_sse import cli, current_sse
 
 def test_publish(app, script_info):
     """Test the format_sse_event."""
+    channel = 'testchannel'
     runner = CliRunner()
 
-    with app.test_request_context():
-        current_sse._pubsub.subscribe('testchannel')
-
-        # get subscribe message
-        sleep(1)
-        message = current_sse._pubsub.get_message()
-        assert message['type'] == 'subscribe'
+    # mock pubsub to be able to subscribe before publish
+    # and then mock subscribe to know if the application really subscribe to
+    # the right channel
+    pubsub = current_sse._pubsub()
+    pubsub.subscribe(channel)
+    pubsub.subscribe = mock.Mock()
+    with mock.patch('invenio_sse.current_sse._pubsub', return_value=pubsub), \
+            app.test_request_context():
 
         with runner.isolated_filesystem():
             with open('message.json', 'wb') as f:
@@ -55,13 +58,17 @@ def test_publish(app, script_info):
             res = runner.invoke(cli.sse, [
                 'publish',
                 'message.json',
-                '--channel', 'testchannel',
+                '--channel', channel,
                 '--type', 'edit'
             ], obj=script_info)
             assert res.exit_code == 0
 
         # get the message formatted
         sleep(1)
-        message = next(current_sse.messages())
+        message = next(current_sse.messages(channel=channel))
+        # check you are receiving the message sent
         assert message == \
             'event:edit\ndata: ["{\\"hello\\": \\"World\\"}"]\n\n'
+        # and subscribe to the right channel
+        (((subscribed, ), _), ) = pubsub.subscribe.call_args_list
+        assert subscribed == channel

@@ -30,10 +30,10 @@ from copy import deepcopy
 
 from flask import Blueprint, Response, url_for
 from flask.views import MethodView
+from invenio_deposit.search import DepositSearch
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_records_rest.views import need_record_permission, pass_record
 
-from invenio_deposit.search import DepositSearch
 from invenio_sse import current_sse
 
 

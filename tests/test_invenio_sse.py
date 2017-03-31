@@ -28,9 +28,9 @@
 from __future__ import absolute_import, print_function
 
 import json
-import subprocess
 from time import sleep
 
+import mock
 from flask import Flask
 
 from invenio_sse import InvenioSSE, current_sse
@@ -57,40 +57,49 @@ def test_init():
 
 def test_pubsub(app):
     """Test publish."""
+    channel = 'testchannel'
     with app.test_request_context():
-        current_sse._pubsub.subscribe('testchannel')
+        pubsub = current_sse._pubsub()
+
+        pubsub.subscribe(channel)
 
         # get subscribe message
         sleep(1)
-        message = current_sse._pubsub.get_message()
+        message = pubsub.get_message()
         assert message['type'] == 'subscribe'
 
         # send message
-        current_sse.publish(data='hello world', channel='testchannel')
+        current_sse.publish(data='hello world', channel=channel)
         # get the message
         sleep(1)
-        message = current_sse._pubsub.get_message()
+        message = pubsub.get_message()
         assert message['type'] == 'message'
-        assert message['channel'].decode('utf-8') == 'testchannel'
+        assert message['channel'].decode('utf-8') == channel
         assert json.loads(message['data'].decode('utf-8')) == \
             {"retry": None, "data": "hello world", "event": None, "id": None}
 
         # send message
-        current_sse.publish(data='hello world', channel='testchannel',
+        current_sse.publish(data='hello world', channel=channel,
                             type_='mytype', retry=123, id_=456)
         # get the message
         sleep(1)
-        message = current_sse._pubsub.get_message()
+        message = pubsub.get_message()
         assert message['type'] == 'message'
-        assert message['channel'].decode('utf-8') == 'testchannel'
+        assert message['channel'].decode('utf-8') == channel
         assert json.loads(message['data'].decode('utf-8')) == \
             {"retry": 123, "data": "hello world", "event": "mytype", "id": 456}
 
         # send message
-        current_sse.publish(data='hello2', channel='testchannel',
+        current_sse.publish(data='hello2', channel=channel,
                             type_='mytype2', retry=456, id_=789)
         # get the message formatted
         sleep(1)
-        message = next(current_sse.messages())
-        assert message == \
-            'event:mytype2\ndata: "hello2"\nid:789\nretry:456\n\n'
+        pubsub.subscribe = mock.Mock()
+        with mock.patch('invenio_sse.current_sse._pubsub',
+                        return_value=pubsub):
+            message = next(current_sse.messages(channel=channel))
+            assert message == \
+                'event:mytype2\ndata: "hello2"\nid:789\nretry:456\n\n'
+            # check you subscribe to the right channel
+            (((subscribed, ), _), ) = pubsub.subscribe.call_args_list
+            assert subscribed == channel
