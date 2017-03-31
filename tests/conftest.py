@@ -39,7 +39,6 @@ from flask.cli import ScriptInfo
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
 from flask_celeryext import FlaskCeleryExt
-from flask_cli import FlaskCLI
 from flask_login import login_user
 from flask_oauthlib.provider import OAuth2Provider
 from invenio_access import InvenioAccess
@@ -115,7 +114,6 @@ def app_deposit():
         OAUTH2_CACHE_TYPE='simple',
     )
     app.url_map.converters['pid'] = PIDConverter
-    FlaskCLI(app)
     Babel(app)
     FlaskCeleryExt(app)
     InvenioDB(app)
