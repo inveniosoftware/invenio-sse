@@ -123,7 +123,6 @@ def app_deposit():
     app.register_blueprint(accounts_blueprint)
     InvenioAssets(app)
     InvenioJSONSchemas(app)
-    InvenioSearch(app)
     InvenioRecords(app)
     app.url_map.converters['pid'] = PIDConverter
     InvenioRecordsREST(app)
@@ -139,6 +138,7 @@ def app_deposit():
     app.register_blueprint(oauth2server_settings_blueprint)
     InvenioDepositREST(app)
     InvenioSSE(app)
+    InvenioSearch(app)
 
     with app.app_context():
         yield app

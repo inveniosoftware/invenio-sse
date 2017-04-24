@@ -67,8 +67,10 @@ def test_publish(app, script_info):
         sleep(1)
         message = next(current_sse.messages(channel=channel))
         # check you are receiving the message sent
-        assert message == \
-            'event:edit\ndata: ["{\\"hello\\": \\"World\\"}"]\n\n'
+        assert message.startswith(
+            'event:edit\ndata: ["{\\"hello\\": \\"World\\"}"]\nid:')
+        assert message.endswith('\n\n')
+
         # and subscribe to the right channel
         (((subscribed, ), _), ) = pubsub.subscribe.call_args_list
         assert subscribed == channel

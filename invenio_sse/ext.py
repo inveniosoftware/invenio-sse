@@ -27,6 +27,7 @@
 from __future__ import absolute_import, print_function
 
 import json
+import time
 
 import pkg_resources
 from redis import StrictRedis
@@ -68,6 +69,7 @@ class _SSEState(object):
         :param channel: Optional channel to direct events to different clients,
                         by defaul ``sse``.
         """
+        id_ = id_ or time.time()
         msg = {"data": data, "event": type_, "id": id_, "retry": retry}
         self._redis.publish(channel, json.dumps(msg))
 

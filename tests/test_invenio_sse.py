@@ -68,26 +68,43 @@ def test_pubsub(app):
         message = pubsub.get_message()
         assert message['type'] == 'subscribe'
 
-        # send message
-        current_sse.publish(data='hello world', channel=channel)
-        # get the message
-        sleep(1)
-        message = pubsub.get_message()
-        assert message['type'] == 'message'
-        assert message['channel'].decode('utf-8') == channel
-        assert json.loads(message['data'].decode('utf-8')) == \
-            {"retry": None, "data": "hello world", "event": None, "id": None}
-
-        # send message
-        current_sse.publish(data='hello world', channel=channel,
+        # send messages
+        current_sse.publish(data='hello world 1', channel=channel)
+        current_sse.publish(data='hello world 2', channel=channel,
+                            type_='mytype', retry=234)
+        current_sse.publish(data='hello world 3', channel=channel,
                             type_='mytype', retry=123, id_=456)
         # get the message
         sleep(1)
         message = pubsub.get_message()
         assert message['type'] == 'message'
         assert message['channel'].decode('utf-8') == channel
+        data = json.loads(message['data'].decode('utf-8'))
+        timestamp1 = data['id']
+        assert data == \
+            {"retry": None, "data": "hello world 1", "event": None,
+             "id": timestamp1}
+
+        # get the message
+        message = pubsub.get_message()
+        assert message['type'] == 'message'
+        assert message['channel'].decode('utf-8') == channel
+        data = json.loads(message['data'].decode('utf-8'))
+        timestamp2 = data['id']
+        assert data == \
+            {"retry": 234, "data": "hello world 2", "event": "mytype",
+             "id": timestamp2}
+
+        # check timestamp is growing
+        assert float(timestamp1) < float(timestamp2)
+
+        # get the message
+        message = pubsub.get_message()
+        assert message['type'] == 'message'
+        assert message['channel'].decode('utf-8') == channel
         assert json.loads(message['data'].decode('utf-8')) == \
-            {"retry": 123, "data": "hello world", "event": "mytype", "id": 456}
+            {"retry": 123, "data": "hello world 3",
+             "event": "mytype", "id": 456}
 
         # send message
         current_sse.publish(data='hello2', channel=channel,
