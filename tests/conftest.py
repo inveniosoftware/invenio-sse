@@ -182,7 +182,7 @@ def location(app_deposit, db):
 
 @pytest.fixture()
 def deposit(app_deposit, es, users, location, db):
-    """New deposit with files."""
+    """Get new deposit with files."""
     record = {
         'title': 'fuu'
     }

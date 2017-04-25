@@ -92,7 +92,7 @@ class DepositSSE(MethodView):
     @pass_record
     @need_record_permission('read_permission_factory')
     def get(self, pid, record):
-        """Initiate SSE connection.
+        """Initialize SSE connection.
 
         Permission required: `read_permission_factory`.
 

@@ -74,7 +74,7 @@ class _SSEState(object):
         self._redis.publish(channel, json.dumps(msg))
 
     def _pubsub(self):
-        """A redis pubsub instance."""
+        """Get redis pubsub instance."""
         return self._redis.pubsub()
 
     def messages(self, channel='sse'):
