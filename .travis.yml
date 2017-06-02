@@ -58,6 +58,5 @@ deploy:
   distributions: "compile_catalog sdist bdist_wheel"
   on:
     tags: true
-    repo: egabancho/invenio-sse
     python: "2.7"
     conditions: $REQUIREMENTS = release
