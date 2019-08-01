@@ -23,16 +23,17 @@ tests_require = [
     'invenio-rest[cors]>=1.0.0',
     'isort>=4.2.2',
     'mock>=1.3.0',
-    'psycopg2>=2.6.1',
+    # 'psycopg2>=2.6.1',
     'pydocstyle>=1.0.0',
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
     'pytest>=2.8.0',
+    'psycopg2-binary'
 ]
 
 extras_require = {
     'deposit': [
-        'invenio-deposit>=1.0.0',
+        'invenio-deposit>=1.0.0a9',
     ],
     'docs': [
         'Sphinx>=1.5.1',
