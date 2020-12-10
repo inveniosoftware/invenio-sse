@@ -25,8 +25,8 @@
  Invenio-SSE
 =============
 
-.. image:: https://img.shields.io/travis/inveniosoftware/invenio-sse.svg
-        :target: https://travis-ci.org/inveniosoftware/invenio-sse
+.. image:: https://github.com/inveniosoftware/invenio-sse/workflows/CI/badge.svg
+        :target: https://github.com/inveniosoftware/invenio-sse/actions?query=workflow%3ACI
 
 .. image:: https://img.shields.io/coveralls/inveniosoftware/invenio-sse.svg
         :target: https://coveralls.io/r/inveniosoftware/invenio-sse

@@ -44,3 +44,4 @@ recursive-include examples *.py
 recursive-include invenio_sse *.html
 recursive-include invenio_sse *.po *.pot *.mo
 recursive-include tests *.py
+recursive-include .github/workflows *.yml

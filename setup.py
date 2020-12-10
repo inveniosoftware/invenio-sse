@@ -32,27 +32,25 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'check-manifest>=0.25',
-    'coverage>=4.0',
-    'invenio-accounts>=1.0.0b3',
-    'invenio-access>=1.0.0a11',
-    'invenio-rest[cors]>=1.0.0a10',
-    'isort>=4.2.2',
-    'mock>=1.3.0',
+    'invenio-accounts>=1.4.2',
+    'invenio-access>=1.4.1',
+    'invenio-rest[cors]>=1.2.3',
+    'mock>=4.0.3',
     'psycopg2>=2.6.1',
-    'pydocstyle>=1.0.0',
     'pytest-cache>=1.0',
-    'pytest-cov>=1.8.0',
-    'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0',
+    'pytest-invenio>=1.4.0',
+    'invenio-assets>=1.2.5',
+    'elasticsearch>=7.0.0',
+    'invenio_search>=1.4.1',
+    'elasticsearch-dsl>=7.0.0'
 ]
 
 extras_require = {
     'deposit': [
-        'invenio-deposit>=1.0.0a8',
+        'invenio-deposit>=1.0.0a11',
     ],
     'docs': [
-        'Sphinx>=1.5.1',
+        'Sphinx>=3',
     ],
     'tests': tests_require,
 }
@@ -66,7 +64,7 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask>=0.11.1',
+    'Flask>=1.0.4',
     'redis>=2.10.5',
 ]
 
